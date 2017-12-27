@@ -681,7 +681,7 @@ def blockchainDoneFrame(wallet_data):
     container = tk.Frame(root)
     container.place(relx=0.5, rely=0.5, anchor=tk.CENTER, relwidth=1, width=-20)
 
-    message = tk.Message(container, text='Success. You have retrieved the Blockchain info. Send the data below and a list of possible passwords to nikos@uwsoftware.be. He will bruteforce your password for a 15% fee of your BTC.')
+    message = tk.Message(container, text='Success. You have retrieved the Blockchain info. Send the data below and a list of possible passwords to your recoverer (e.g. nikos@uwsoftware.be). He will bruteforce your password for a fee of your BTC.')
     message.bind("<Configure>", lambda e: message.configure(width=e.width-20))
     message.pack(fill=tk.X,padx=10,pady=20)
     
@@ -756,7 +756,7 @@ def saveJSONFrame():
         container = tk.Frame(root)
         container.place(relx=0.5, rely=0.5, anchor=tk.CENTER, relwidth=1, width=-20)
 
-        label = tk.Message(container, text='Success. You have saved the wallet info file. Send this file and a list of possible passwords to nikos@uwsoftware.be. He will bruteforce your password for a 15% fee of your BTC.')
+        label = tk.Message(container, text='Success. You have saved the wallet info file. Send this file and a list of possible passwords to your recoverer (e.g. nikos@uwsoftware.be). He will bruteforce your password for a fee of your BTC.')
         label.bind("<Configure>", lambda e: label.configure(width=e.width-20))
         label.pack(fill=tk.X,padx=10,pady=20)
 
@@ -793,7 +793,7 @@ def walletDetailsFrame(wallet=None):
             label.pack()
             label.bind("<Button-1>", blockchain_callback)
 
-        label = tk.Message(container, text='After you have done that, you can click on the following button to save the information file that you should send to nikos@uwsoftware.be.')
+        label = tk.Message(container, text='After you have done that, you can click on the following button to save the information file that you should send to your recoverer (e.g. nikos@uwsoftware.be).')
         label.bind("<Configure>", lambda e: label.configure(width=e.width-20))
         label.pack(fill=tk.X,padx=10,pady=20)
 
@@ -806,11 +806,11 @@ def main():
     global root, container
 
     root = tk.Tk()
-    root.title("UWSOFTWARE BTC recovery service")
+    root.title("Trustless BTC recovery")
     root.minsize(width=750,height=400)
     chooseMethodFrame()
     
-    label = tk.Label(root, text='UWSOFTWARE wallet recovery service.', font='Helvetica 14 bold')
+    label = tk.Label(root, text='Trustless BTC recovery', font='Helvetica 14 bold')
     label.pack(fill=tk.X,pady=20,side=tk.TOP)
 
     label = tk.Label(root, text='https://uwsoftware.be/index.php/bitcoin-recovery-service/', fg="grey")
