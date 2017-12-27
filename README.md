@@ -7,12 +7,12 @@ Quick start to extract the information from your wallet.
  * Windows:
     * Download and install [python 2.7](http://www.python.org/ftp/python/2.7.2/python-2.7.2.msi)
     * Install [ActiveCtl](https://www.activestate.com/activetcl/downloads)
-    * Download [script](https://raw.githubusercontent.com/UwSoftWare/trustless_btc_recovery/master/trustless_btc_recovery.py)
+    * Download [script](https://cdn.rawgit.com/UwSoftWare/trustless_btc_recovery/master/trustless_btc_recovery.py)
     * Double click the script to execute and follow the steps
  * Linux (Ubuntu):
     * Install python - sudo apt-get install python
     * Install Tkinter - sudo apt-get install python-tk
-    * Download the [script](https://raw.githubusercontent.com/UwSoftWare/trustless_btc_recovery/master/trustless_btc_recovery.py) 
+    * Download the [script](https://cdn.rawgit.com/UwSoftWare/trustless_btc_recovery/master/trustless_btc_recovery.py) 
     * Optionally set the nautilus browser to run scripts [1](https://stackoverflow.com/a/26439671)
     * Double click the script to execute and follow the steps
     
