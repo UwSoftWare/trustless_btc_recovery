@@ -341,7 +341,7 @@ def parse_wallet(db, item_callback):
                 d['crypted_key'] = vds.read_bytes(vds.read_compact_size())
                 d['salt'] = vds.read_bytes(vds.read_compact_size())
                 d['nDerivationMethod'] = vds.read_int32()
-                d['nDeriveIterations'] = vds.read_int32()
+                d['nDerivationIterations'] = vds.read_int32()
                 d['vchOtherDerivationParameters'] = vds.read_bytes(vds.read_compact_size())
             elif type == "acc":
                 d['account'] = kds.read_string()
