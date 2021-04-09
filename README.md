@@ -36,7 +36,7 @@ This programm is based on [pywallet](https://github.com/jackjack-jj/pywallet), [
 ## Blame list ##
 When doing the recovery, most people are more than happy to pay the fees of the recovery service. They are needed because the recovery services operate GPU clusters that costs more than 30 dollar per hour. A recovery can easily cost 2000+ dollar if the machine runs 3 days. Though there are persons not paying the fee or persons stealing wallets [1](https://www.reddit.com/r/Bitcoin/comments/46fcfo/wwwwalletrecoveryservicescom_scam/) and asking the recovery service for assistence. These persons and identifiers for those wallets will be listed here. As we want to help honest people, the upcoming recovery services can be warned.
 
-TBD
+- No one yet!
 
 You can open merge requests for this.
 
