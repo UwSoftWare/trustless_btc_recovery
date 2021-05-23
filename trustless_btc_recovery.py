@@ -13,6 +13,14 @@ from __future__ import print_function
 
 import sys
 
+# Error handling
+def show_exception_and_exit(exc_type, exc_value, tb):
+    import traceback
+    traceback.print_exception(exc_type, exc_value, tb)
+    raw_input("Press key to exit.")
+    sys.exit(-1)
+sys.excepthook = show_exception_and_exit
+
 if sys.version_info.major == 3:
    from bsddb3.db import *
 else:
@@ -257,7 +265,11 @@ class BCDataStream(object):
 
         return ''
 
-    def read_boolean(self): return self.read_bytes(1)[0] != chr(0)
+    def read_boolean(self): 
+        if sys.version_info.major == 3:
+            return self.read_bytes(1)[0] != bytes([x])
+        else:
+            return self.read_bytes(1)[0] != chr(0)
     def read_int16(self): return self._read_num('<h')
     def read_uint16(self): return self._read_num('<H')
     def read_int32(self): return self._read_num('<i')
@@ -275,7 +287,7 @@ class BCDataStream(object):
 
     def read_compact_size(self):
         if sys.version_info.major == 3:
-            size = ord(chr(self.input[self.read_cursor]))
+            size = self.input[self.read_cursor]
         else:
             size = ord(self.input[self.read_cursor])
         self.read_cursor += 1
