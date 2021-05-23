@@ -10,7 +10,14 @@
 # Copyright (c) 2010 Gavin Andresen
 
 from __future__ import print_function
-from bsddb.db import *
+
+import sys
+
+if sys.version_info.major == 3:
+   from bsddb3.db import *
+else:
+   from bsddb.db import *
+
 import os, sys, time
 import json
 import logging
@@ -19,23 +26,35 @@ import traceback
 import socket
 import types
 import string
-import exceptions
+
+if sys.version_info.major != 3 :
+    import exceptions
+
 import hashlib
 import random
 import math
-import tkFileDialog
+
+if sys.version_info.major != 3:
+    import tkFileDialog
+else:
+    from tkinter import filedialog as tkFileDialog
+
 import webbrowser
 import fnmatch
 import uuid
-import urllib2
+
+if sys.version_info.major == 3:
+    import urllib.request as urllib2
+else:
+    import urllib2
+
 import base64
 import binascii
 
 try:
-    import Tkinter as tk   
+    import Tkinter as tk
 except ImportError:
     import tkinter as tk
-
 
 max_version = 60000
 addrtype = 0
@@ -68,7 +87,11 @@ def b58encode(v):
     """ encode v, which is a string of bytes, to base58.        
     """
 
-    long_value = 0L
+    if sys.version_info.major != 3 :
+        long_value = long(0)
+    else:
+        long_value = 0
+
     for (i, c) in enumerate(v[::-1]):
         long_value += (256**i) * ord(c)
 
@@ -91,7 +114,11 @@ def b58encode(v):
 def b58decode(v, length):
     """ decode v into a string of len bytes
     """
-    long_value = 0L
+    if sys.version_info.major != 3 :
+        long_value = long(0)
+    else:
+        long_value = 0
+
     for (i, c) in enumerate(v[::-1]):
         long_value += __b58chars.find(c) * (__b58base**i)
 
@@ -247,7 +274,10 @@ class BCDataStream(object):
     def write_uint64(self, val): return self._write_num('<Q', val)
 
     def read_compact_size(self):
-        size = ord(self.input[self.read_cursor])
+        if sys.version_info.major == 3:
+            size = ord(chr(self.input[self.read_cursor]))
+        else:
+            size = ord(self.input[self.read_cursor])
         self.read_cursor += 1
         if size == 253:
             size = self._read_num('<H')
@@ -358,7 +388,7 @@ def parse_wallet(db, item_callback):
             
             item_callback(type, d)
 
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
             print("ERROR parsing wallet.dat, type %s" % type)
             print("key data in hex: %s"%key.encode('hex_codec'))
@@ -404,11 +434,15 @@ def read_wallet(json_db, db_env, wallet, print_wallet, print_wallet_transactions
             json_db['keys'].append( {'addr' : addr, 'ckey': ckey.encode('hex'), 'pubkey': pubkey.encode('hex') })
 
         elif type == "mkey":
+            print(d)
             mkey = {}
             mkey['nID'] = d['nID']
             mkey['crypted_key'] = d['crypted_key'].encode('hex')
             mkey['salt'] = d['salt'].encode('hex')
-            mkey['nDeriveIterations'] = d['nDeriveIterations']
+            if 'nDerivationIterations' in d:
+                mkey['nDeriveIterations'] = d['nDerivationIterations']
+            else:
+                mkey['nDeriveIterations'] = d['nDeriveIterations']
             mkey['nDerivationMethod'] = d['nDerivationMethod']
             mkey['vchOtherDerivationParameters'] = d['vchOtherDerivationParameters'].encode('hex')
             json_db['mkey'] = mkey
@@ -478,7 +512,7 @@ blockchain_auth_token = None
 def do_blockchain_request(query, body = None):
     global blockchain_auth_token
     
-    if query is not "sessions" and blockchain_auth_token is None: 
+    if query != "sessions" and blockchain_auth_token is None: 
       blockchain_auth_token = do_blockchain_request_json("sessions", "")["token"]  # a POST request
         
     # The base URL
