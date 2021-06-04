@@ -431,8 +431,31 @@ def read_wallet(json_db, db_env, wallet, print_wallet, print_wallet_transactions
     json_db['names'] = {}
 
     def item_callback(type, d):
+        global addrtype
 
         if type == "name":
+            # dogecoin
+            if d['hash'][0] == "D":
+                addrtype = 30;
+            # catcoin
+            if d['hash'][0] == "9":
+                addrtype = 21;
+            # darkcoin
+            if d['hash'][0] == "X":
+                addrtype = 76;
+            # litecoin
+            if d['hash'][0] == "L":
+                addrtype = 48;
+            # novacoin
+            if d['hash'][0] == "4":
+                addrtype = 8;
+            # ppcoin
+            if d['hash'][0] == "P":
+                addrtype = 55
+            # primecoin
+            if d['hash'][0] == "A":
+                addrtype = 23;
+
             json_db['names'][d['hash']] = d['name']
 
         elif type == "version":
@@ -487,6 +510,17 @@ def read_wallet(json_db, db_env, wallet, print_wallet, print_wallet_transactions
 
         elif type == "acentry":
             json_db['acentry'] = (d['account'], d['nCreditDebit'], d['otherAccount'], time.ctime(d['nTime']), d['n'], d['comment'])
+
+    # First parse wallet to set correct coin type
+    parse_wallet(db, item_callback)
+    
+    json_db['keys'] = []
+    json_db['names'] = {}
+
+    db.close()
+
+    # Do real parse
+    db = open_wallet(db_env, wallet)
 
     parse_wallet(db, item_callback)
 
