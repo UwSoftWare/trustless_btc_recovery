@@ -71,8 +71,12 @@ private_keys = []
 
 def hash_160(public_key):
     md = hashlib.new('ripemd160')
-    md.update(hashlib.sha256(public_key).digest())
-    return md.digest()
+    if sys.version_info.major == 3:
+        md.update(hashlib.sha256(public_key.encode("cp437")).digest())
+        return md.digest().decode("cp437")
+    else:
+        md.update(hashlib.sha256(public_key).digest())
+        return md.digest()
 
 def public_key_to_bc_address(public_key):
     h160 = hash_160(public_key)
@@ -101,7 +105,10 @@ def b58encode(v):
         long_value = 0
 
     for (i, c) in enumerate(v[::-1]):
-        long_value += (256**i) * ord(c)
+        if sys.version_info.major == 3:
+            long_value += (256**i) * c.encode("cp437")[0]
+        else:
+            long_value += (256**i) * ord(c)
 
     result = ''
     while long_value >= __b58base:
@@ -154,7 +161,10 @@ def b58decode(v, length):
 # address handling code
 
 def Hash(data):
-    return hashlib.sha256(hashlib.sha256(data).digest()).digest()
+    if sys.version_info.major == 3:
+        return hashlib.sha256(hashlib.sha256(data.encode("cp437")).digest()).digest().decode("cp437")
+    else:
+        return hashlib.sha256(hashlib.sha256(data).digest()).digest()
 
 def EncodeBase58Check(secret):
     hash = Hash(secret)
@@ -259,7 +269,10 @@ class BCDataStream(object):
         try:
             result = self.input[self.read_cursor:self.read_cursor+length]
             self.read_cursor += length
-            return result
+            if sys.version_info.major == 3:
+                return result.decode("cp437")
+            else:
+                return result
         except IndexError:
             raise SerializationError("attempt to read past end of buffer")
 
@@ -441,22 +454,31 @@ def read_wallet(json_db, db_env, wallet, print_wallet, print_wallet_transactions
 
         elif type == "ckey":
             addr = public_key_to_bc_address(d['public_key'])
-            ckey = d['crypted_key']
-            pubkey = d['public_key']
-            json_db['keys'].append( {'addr' : addr, 'ckey': ckey.encode('hex'), 'pubkey': pubkey.encode('hex') })
+            if sys.version_info.major == 3:
+                ckey = binascii.hexlify(d['crypted_key'].encode("cp437")).decode(("cp437"))
+                pubkey = binascii.hexlify(d['public_key'].encode("cp437")).decode(("cp437"))
+            else:
+                ckey = d['crypted_key'].encode("hex")
+                pubkey = d['public_key'].encode("hex")
+            json_db['keys'].append( {'addr' : addr, 'ckey': ckey, 'pubkey': pubkey })
 
         elif type == "mkey":
-            print(d)
             mkey = {}
             mkey['nID'] = d['nID']
-            mkey['crypted_key'] = d['crypted_key'].encode('hex')
-            mkey['salt'] = d['salt'].encode('hex')
+            if sys.version_info.major == 3:
+                mkey['crypted_key'] = binascii.hexlify(d['crypted_key'].encode("cp437")).decode(("cp437"))
+                mkey['salt'] = binascii.hexlify(d['salt'].encode("cp437")).decode(("cp437"))
+                mkey['vchOtherDerivationParameters'] = binascii.hexlify(d['vchOtherDerivationParameters'].encode("cp437")).decode(("cp437"))
+            else:
+                mkey['crypted_key'] = d['crypted_key'].encode('hex')
+                mkey['salt'] = d['salt'].encode('hex')
+                mkey['vchOtherDerivationParameters'] = d['vchOtherDerivationParameters'].encode('hex')
+            
             if 'nDerivationIterations' in d:
                 mkey['nDeriveIterations'] = d['nDerivationIterations']
             else:
                 mkey['nDeriveIterations'] = d['nDeriveIterations']
             mkey['nDerivationMethod'] = d['nDerivationMethod']
-            mkey['vchOtherDerivationParameters'] = d['vchOtherDerivationParameters'].encode('hex')
             json_db['mkey'] = mkey
 
         elif type == "acc":
