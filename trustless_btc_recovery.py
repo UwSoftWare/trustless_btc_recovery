@@ -512,8 +512,6 @@ def read_wallet(json_db, db_env, wallet, print_wallet, print_wallet_transactions
     json_db['keys'] = [k for k in json_db['keys'] if ("reserve" in k and k["reserve"] == 1)]
     json_db['keys'] = json_db['keys'][0:3]
 
-    del(json_db['names'])
-
 
 # download-blockchain-wallet.py -- Blockchain.info wallet file downloader
 # Copyright (C) 2016, 2017 Christopher Gurnee
